@@ -47,7 +47,6 @@ def process_image(image):
     #reordering dimension
     np_image = np_image.transpose((2, 0 ,1 ))
     return np_image
-
 def predict(image_path, model, gpu,  category_names , topk = 1):
     # TODO: Implement the code to predict the class from an image file
     pil_image = Image.open(image_path)
@@ -117,7 +116,7 @@ def load_model(checkpoint_path):
     
     
     model.load_state_dict(checkpoint['model_state_dict'])
-    
+    model.class_to_idx = checkpoint['class_to_idx']
     
     return model
 def main():
