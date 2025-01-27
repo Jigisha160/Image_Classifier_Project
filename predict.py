@@ -48,10 +48,11 @@ def process_image(image):
     np_image = np_image.transpose((2, 0 ,1 ))
     return np_image
 
-def predict(image_path, model, category_names , topk = 1):
+def predict(image_path, model, gpu,  category_names , topk = 1):
     # TODO: Implement the code to predict the class from an image file
     pil_image = Image.open(image_path)
     image = process_image(pil_image)  # Preprocess the image
+    device = torch.device("cuda" if torch.cuda.is_available() and gpu else "cpu")
     model = model.to(device)
     model.eval()
 
@@ -125,10 +126,10 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() and args.gpu else "cpu")
     model = load_model(args.checkpoint)
     cat_to_name = None
-    if args.category_name:
+    if args.category_names:
         with open(args.category_names, 'r') as f:
             cat_to_name = json.load(f)
-    probs, classes = predict(image_path, model, cat_to_name, args.topk)
+    probs, classes = predict(image_path, model, args.gpu, cat_to_name, args.topk)
     
 
 if __name__ == "__main__":
